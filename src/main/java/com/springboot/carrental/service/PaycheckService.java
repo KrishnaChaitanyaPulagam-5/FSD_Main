@@ -21,6 +21,8 @@ public class PaycheckService {
 	private CompanyAccountService cas;
 	@Autowired
 	private CustomerAccountService cuas;
+	@Autowired
+	private LenderService lenderService;
 
 	public PaycheckService(PaycheckRepository paycheckRepository, RentalService rentalService,
 			CompanyAccountService cas) {
@@ -83,6 +85,14 @@ public class PaycheckService {
 	public List<PayCheck> getAll() {
 		// TODO Auto-generated method stub
 		return paycheckRepository.findAll();
+	}
+
+
+	public List<PayCheck> getByLender(String name) {
+		// TODO Auto-generated method stub
+		Lender lender=lenderService.getByLogin(name);
+		
+		return paycheckRepository.getByLender(lender.getId());
 	}
 
 	

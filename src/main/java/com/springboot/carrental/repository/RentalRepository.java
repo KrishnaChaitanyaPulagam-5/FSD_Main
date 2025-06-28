@@ -29,4 +29,7 @@ public interface RentalRepository extends JpaRepository<Rental, Integer>{
 	@Query("SELECT r FROM Rental r WHERE r.reservation.customer.user.username = ?1 AND r.reservation.status = 'BOOKED'")
 	List<Rental> getByLoginBooked(String name);
 
+	@Query("select r from Rental r where reservation.car.lender.user.username=?1")
+	List<Rental> getByLenderId(String name);
+
 }

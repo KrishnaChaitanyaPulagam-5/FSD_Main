@@ -1,7 +1,5 @@
 package com.springboot.carrental.service;
 
-import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
 
 import org.springframework.stereotype.Service;
 
@@ -10,8 +8,7 @@ import com.springboot.carrental.exception.ResourceNotFoundException;
 import com.springboot.carrental.model.Customer;
 import com.springboot.carrental.model.CustomerAccount;
 import com.springboot.carrental.model.Lender;
-import com.springboot.carrental.model.Rental;
-import com.springboot.carrental.model.ReservationLog;
+
 import com.springboot.carrental.repository.CustomerAccountRepository;
 
 @Service
@@ -49,7 +46,7 @@ public class CustomerAccountService {
 
 	public void updateAmount(Customer customer,double amount) throws InsufficientBalanceException, ResourceNotFoundException {
 	
-		int id=customer.getId();
+		int id=customer.getCustomerAccount().getId();
 		CustomerAccount customerAccount=findById(id);
 
 		double cost=customerAccount.getAmount()-amount;

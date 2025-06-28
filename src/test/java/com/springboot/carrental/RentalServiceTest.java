@@ -1,7 +1,6 @@
 package com.springboot.carrental;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -16,7 +15,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import com.springboot.carrental.enums.CarStatus;
 import com.springboot.carrental.enums.PaymentStatus;
-import com.springboot.carrental.exception.CarNotAvailableException;
 import com.springboot.carrental.exception.InsufficientBalanceException;
 import com.springboot.carrental.exception.ResourceNotFoundException;
 import com.springboot.carrental.model.Car;

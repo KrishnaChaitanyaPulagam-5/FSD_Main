@@ -106,4 +106,10 @@ public class RentalService {
 		return rentalRepository.getByLoginBooked(name);
 	}
 
+
+	public List<Rental> getByLenderId(String name) {
+		// TODO Auto-generated method stub
+		return rentalRepository.getByLenderId(name);
+	}
+
 }

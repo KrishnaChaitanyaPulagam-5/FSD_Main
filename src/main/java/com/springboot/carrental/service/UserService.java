@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.springboot.carrental.exception.ResourceNotFoundException;
 import com.springboot.carrental.model.User;
 import com.springboot.carrental.repository.UserRepository;
 @Service
@@ -36,6 +37,15 @@ public class UserService {
 	public Object getUserInfo(String username) {
 		// TODO Auto-generated method stub
 		return userRepository.getByName(username);
+	}
+
+	public User updatePassword(String password, int userID) throws ResourceNotFoundException {
+		// TODO Auto-generated method stub
+		User user=userRepository.findById(userID).orElseThrow(()->new ResourceNotFoundException("user not found"));
+		String plainPassword=password;
+		String encodedpassword=passwordEncoder.encode(plainPassword);
+		user.setPassword(encodedpassword);
+		return userRepository.save(user);
 	}
 
 }

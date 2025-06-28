@@ -16,7 +16,6 @@ import com.springboot.carrental.exception.InsufficientBalanceException;
 import com.springboot.carrental.exception.ResourceNotFoundException;
 import com.springboot.carrental.model.Rental;
 import com.springboot.carrental.model.ReservationLog;
-import com.springboot.carrental.service.PaycheckService;
 import com.springboot.carrental.service.RentalService;
 
 
@@ -51,6 +50,11 @@ public class RentalController {
 	@GetMapping("/getByCustomerId/{customerId}")
 	public RentalDetailsDto getByCustomerId(@PathVariable int customerId) {
 		return rentalService.getByCustomerId(customerId);
+	}
+	
+	@GetMapping("/getByLenderId")
+	public List<Rental> getByLenderId(Principal principal){
+		return rentalService.getByLenderId(principal.getName());
 	}
 	
 }

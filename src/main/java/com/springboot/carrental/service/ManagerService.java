@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 import com.springboot.carrental.exception.ResourceNotFoundException;
 import com.springboot.carrental.model.Branch;
 import com.springboot.carrental.model.CompanyAccount;
-import com.springboot.carrental.model.CustomerAccount;
 import com.springboot.carrental.model.Manager;
 import com.springboot.carrental.model.User;
 import com.springboot.carrental.repository.BranchRepository;

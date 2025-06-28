@@ -10,11 +10,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.springboot.carrental.exception.ResourceNotFoundException;
 import com.springboot.carrental.model.User;
 import com.springboot.carrental.service.UserService;
 import com.springboot.carrental.util.JwtUtil;
@@ -32,6 +35,10 @@ public class UserController {
 	@PostMapping("/registerUser")
 	public User registerUser(@RequestBody User user) {
 		return userService.registerUser(user);
+	}
+	@PutMapping("/updatePassword/{Password}/{UserID}")
+	public User updatePassword(@PathVariable String Password,@PathVariable int UserID) throws ResourceNotFoundException {
+		return userService.updatePassword(Password,UserID);
 	}
 
 	@GetMapping("/getAllUsers")

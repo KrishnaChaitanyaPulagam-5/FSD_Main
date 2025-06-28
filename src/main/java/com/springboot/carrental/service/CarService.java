@@ -1,13 +1,10 @@
 package com.springboot.carrental.service;
 
 import java.security.Principal;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import com.springboot.carrental.dto.CarStatsDto;
 import com.springboot.carrental.enums.CarStatus;
 import com.springboot.carrental.enums.SourceType;
 import com.springboot.carrental.exception.BadRequestException;
@@ -16,12 +13,10 @@ import com.springboot.carrental.model.Branch;
 import com.springboot.carrental.model.Car;
 import com.springboot.carrental.model.Carstats;
 import com.springboot.carrental.model.Lender;
-import com.springboot.carrental.model.ReservationLog;
 import com.springboot.carrental.repository.BranchRepository;
 import com.springboot.carrental.repository.CarRepository;
 import com.springboot.carrental.repository.LenderRepository;
 
-import jakarta.transaction.Transactional;
 @Service
 public class CarService {
 	

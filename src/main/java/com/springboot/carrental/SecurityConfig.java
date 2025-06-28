@@ -64,7 +64,11 @@ public class SecurityConfig {
 				.requestMatchers("/api/car/getCarsByLender").hasAuthority("LENDER")
 				.requestMatchers("/api/branch/getall").permitAll()
 				.requestMatchers("/api/lender/getByLogin").authenticated()
-				.requestMatchers("/api/reserrvations/getByLenderId/{lenderId}").hasAuthority("LENDER")
+				.requestMatchers("/api/rental/getByLenderId").hasAuthority("LENDER")
+				.requestMatchers("/api/paycheck/getByLender").hasAuthority("LENDER")
+				.requestMatchers("/api/user/updatePassword/{Password}/{UserID}").authenticated()
+				.requestMatchers("/api/reservation/getTopCars").permitAll()
+				.requestMatchers("/api/reservation/getTopCarsForCustomer").hasAuthority("CUSTOMER")
 				
 				.anyRequest()
 //				.permitAll())//should be removed after development

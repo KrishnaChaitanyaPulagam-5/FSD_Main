@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+import com.springboot.carrental.model.Car;
 import com.springboot.carrental.model.ReservationLog;
 
 public interface ReservationRepository extends JpaRepository<ReservationLog, Integer>{
@@ -18,9 +19,17 @@ public interface ReservationRepository extends JpaRepository<ReservationLog, Int
 	@Query("select r from ReservationLog r where customer.user.username=?1")
 	List<ReservationLog> getByLogin(String username);
 
-	@Query("select r from ReservationLog r where car.lender.id=?1")
-	List<ReservationLog> getBylenderId(int lenderId);
+	@Query("select r from ReservationLog r where car.lender.user.username=?1")
+	List<ReservationLog> getBylenderId(String username);
 
+	@Query("select r.car,count(r.car) as BookingCount from ReservationLog r GROUP BY r.car order by BookingCount desc")
+	List<Object[]> getTopCars();
+
+	@Query("select r from ReservationLog r where customer.id=?1")
+	List<ReservationLog> getByCustomerCars(int customerId);
+
+	@Query("select r.car from ReservationLog r where r.customer.id=?1 group by r.car.id order by count(r.car) desc")
+	List<Car> getByCustomertop5(int customerId);
 
 
 }

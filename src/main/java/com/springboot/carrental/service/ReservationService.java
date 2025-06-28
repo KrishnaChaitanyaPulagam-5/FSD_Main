@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.springboot.carrental.dto.CarStatsDto;
+import com.springboot.carrental.dto.CustomerBookingDto;
+import com.springboot.carrental.dto.Top5CarsDto;
 import com.springboot.carrental.enums.CarStatus;
 import com.springboot.carrental.exception.CarNotAvailableException;
 import com.springboot.carrental.exception.InsufficientBalanceException;
@@ -93,18 +95,10 @@ public class ReservationService {
 
 	
 	public CarStatsDto getGlobalCarStats(CarStatsDto dto) {
-		// TODO Auto-generated method stub
 		List<Car> cars=carService.getAll();
 		List<ReservationLog> list=getall();
-//		List<String> courseTitles = new ArrayList<>();
-//        List<Integer> enrolls = new ArrayList<>();
 		List<String> carTitles=new ArrayList<>();
 		List<Integer> reservations=new ArrayList<>();
-//		courses.stream().forEach(c -> {
-//            long num = list.stream().filter(lc -> lc.getCourse().getId() == c.getId()).count();
-//            courseTitles.add(c.getTitle());
-//            enrolls.add((int) num);
-//        });
 		cars.stream().forEach(c->{
 		long num=list.stream().filter(l->l.getCar().getId() == c.getId()).count();
 		carTitles.add(c.getBrand()+" "+c.getModel());
@@ -115,8 +109,47 @@ public class ReservationService {
 		return dto;
 	}
 
-	public List<ReservationLog> getByLenderId(int lenderId) {
+	public List<ReservationLog> getByLenderId(String username) {
 		// TODO Auto-generated method stub
-		return reservationRepository.getBylenderId(lenderId);
+		return reservationRepository.getBylenderId(username);
 	}
+
+	public Top5CarsDto getTopCars(Top5CarsDto dto) {
+		// TODO Auto-generated method stub
+		
+		List<Object[]> TopCars=reservationRepository.getTopCars();
+		List<String> carTitles = new ArrayList<>();
+	    List<Integer> bookings = new ArrayList<>();
+
+	    TopCars.stream().limit(5).forEach(obj -> {
+	        Car car = (Car) obj[0];
+	        Long count = (Long) obj[1];
+
+	        carTitles.add(car.getBrand() + " " + car.getModel());
+	        bookings.add(count.intValue());
+	    });
+
+	    dto.setCars(carTitles);
+	    dto.setBookings(bookings);
+	    return dto;
+	}
+
+	public CustomerBookingDto getTopCustomerCars(int customerId, CustomerBookingDto dto) {
+		// TODO Auto-generated method stub
+		List<ReservationLog> reservations=reservationRepository.getByCustomerCars(customerId);
+		List<Car> cars=reservationRepository.getByCustomertop5(customerId);
+		List<String> carTitles=new ArrayList<>();
+		List<Integer> bookingCount=new ArrayList<>();
+		cars.stream().limit(5).forEach(c->{
+			long num=reservations.stream().filter(l->l.getCar().getId()==c.getId()).count();
+			carTitles.add(c.getBrand()+" "+c.getModel());
+			bookingCount.add((int) num);
+		});
+		dto.setCars(carTitles);
+		dto.setReservations(bookingCount);
+		
+		return dto;
+	}
+	
+	
 }
