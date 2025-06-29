@@ -3,7 +3,6 @@ package com.springboot.carrental.service;
 import java.time.LocalDate;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.springboot.carrental.enums.PaymentStatus;
@@ -19,17 +18,17 @@ public class PaycheckService {
 	private PaycheckRepository paycheckRepository;
 	private RentalService rentalService;
 	private CompanyAccountService cas;
-	@Autowired
 	private CustomerAccountService cuas;
-	@Autowired
 	private LenderService lenderService;
 
 	public PaycheckService(PaycheckRepository paycheckRepository, RentalService rentalService,
-			CompanyAccountService cas) {
+			CompanyAccountService cas,CustomerAccountService cuas,LenderService lenderService) {
 		super();
 		this.paycheckRepository = paycheckRepository;
 		this.rentalService = rentalService;
 		this.cas = cas;
+		this.cuas=cuas;
+		this.lenderService=lenderService;
 	}
 
 

@@ -4,7 +4,8 @@ import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.springboot.carrental.dto.CarStatsDto;
@@ -28,20 +29,23 @@ public class ReservationService {
 	private CarRepository carRepository;
 	private CustomerRepository customerRepository;
 	private RentalService rentalService;
-	@Autowired
 	private CarService carService;
+	
+	Logger logger=LoggerFactory.getLogger("ReservationService");
 
 	public ReservationService(ReservationRepository reservationRepository, CarRepository carRepository,
-			CustomerRepository customerRepository, RentalService rentalService) {
+			CustomerRepository customerRepository, RentalService rentalService,CarService carService) {
 		super();
 		this.reservationRepository = reservationRepository;
 		this.carRepository = carRepository;
 		this.customerRepository = customerRepository;
 		this.rentalService = rentalService;
+		this.carService=carService;
 	}
 
 	public ReservationLog registerNewReservation(int customerId, int carId, ReservationLog reservation) throws InsufficientBalanceException, CarNotAvailableException, ResourceNotFoundException {
 		// TODO Auto-generated method stub
+		logger.info("Attempting to register reservation: customerId={}, carId={}", customerId, carId);
 		Car car = carRepository.findById(carId).orElseThrow(() -> new ResourceNotFoundException("Car Not Found"));
 		Customer customer = customerRepository.findById(customerId).orElseThrow(() -> new ResourceNotFoundException("Customer Id Invalid"));
 		if (car.getStatus().equals(CarStatus.AVAILABLE)) {
@@ -50,11 +54,13 @@ public class ReservationService {
 			reservation.setStatus(CarStatus.INBOOKING);
 			carService.updateCarStatus(CarStatus.INBOOKING, car);
 			ReservationLog savedReservation = reservationRepository.save(reservation);
+			logger.info("Reservation saved with ID: {}", savedReservation.getId());
 			rentalService.addNewRental(savedReservation);
 
 
 			return savedReservation;
 		} else {
+			logger.warn("Car you are seeking is already booked : carID={}",carId);
 			throw new CarNotAvailableException("Car You are Seeking is already Booked");
 		}
 
@@ -72,7 +78,7 @@ public class ReservationService {
 
 	public ReservationLog getById(int id) {
 		// TODO Auto-generated method stub
-		return reservationRepository.findById(id).orElseThrow(() -> new RuntimeException());
+		return reservationRepository.findById(id).orElseThrow(() -> new RuntimeException("Invalid Id.check again"));
 	}
 
 	public ReservationLog getForCar(int carId) {
@@ -80,8 +86,9 @@ public class ReservationService {
 	}
 
 	public ReservationLog updateReservation(CarStatus status, ReservationLog reservation) {
+		
 		reservation.setStatus(status);
-
+		logger.info("updated car {} status to {}",reservation.getCar().getId(),status);
 		return reservationRepository.save(reservation);
 	}
 
@@ -95,6 +102,7 @@ public class ReservationService {
 
 	
 	public CarStatsDto getGlobalCarStats(CarStatsDto dto) {
+		logger.info("Collecting Global Car Stats..");
 		List<Car> cars=carService.getAll();
 		List<ReservationLog> list=getall();
 		List<String> carTitles=new ArrayList<>();
@@ -116,18 +124,18 @@ public class ReservationService {
 
 	public Top5CarsDto getTopCars(Top5CarsDto dto) {
 		// TODO Auto-generated method stub
-		
-		List<Object[]> TopCars=reservationRepository.getTopCars();
+		logger.info("Collecting Top Cars..");
+		List<Car> TopCars=reservationRepository.getTopCars();
+		List<ReservationLog> reservations=getall();
 		List<String> carTitles = new ArrayList<>();
 	    List<Integer> bookings = new ArrayList<>();
-
-	    TopCars.stream().limit(5).forEach(obj -> {
-	        Car car = (Car) obj[0];
-	        Long count = (Long) obj[1];
-
-	        carTitles.add(car.getBrand() + " " + car.getModel());
-	        bookings.add(count.intValue());
-	    });
+	    logger.info("filtering the top 5 cars");
+	    TopCars.stream().limit(5).forEach(c->{
+			long num=reservations.stream().filter(l->l.getCar().getId()==c.getId()).count();
+			logger.info("Collected cars size:{}",carTitles.size());
+			carTitles.add(c.getBrand()+" "+c.getModel());
+			bookings.add((int) num);
+		});
 
 	    dto.setCars(carTitles);
 	    dto.setBookings(bookings);
@@ -135,7 +143,7 @@ public class ReservationService {
 	}
 
 	public CustomerBookingDto getTopCustomerCars(int customerId, CustomerBookingDto dto) {
-		// TODO Auto-generated method stub
+		logger.info("Collecting Top cars By Customer");
 		List<ReservationLog> reservations=reservationRepository.getByCustomerCars(customerId);
 		List<Car> cars=reservationRepository.getByCustomertop5(customerId);
 		List<String> carTitles=new ArrayList<>();

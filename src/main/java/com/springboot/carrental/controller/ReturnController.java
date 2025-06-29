@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.springboot.carrental.model.Rental;
 import com.springboot.carrental.service.ReturnService;
 
 @RestController
@@ -19,7 +20,7 @@ public class ReturnController {
 	
 	
 	@PutMapping("/process/{rentalId}")
-	public Object returnCar(@PathVariable int rentalId){
+	public Rental returnCar(@PathVariable int rentalId){
 		return returnService.returnCar(rentalId);
 		
 	}

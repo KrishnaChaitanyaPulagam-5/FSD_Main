@@ -22,8 +22,8 @@ public interface ReservationRepository extends JpaRepository<ReservationLog, Int
 	@Query("select r from ReservationLog r where car.lender.user.username=?1")
 	List<ReservationLog> getBylenderId(String username);
 
-	@Query("select r.car,count(r.car) as BookingCount from ReservationLog r GROUP BY r.car order by BookingCount desc")
-	List<Object[]> getTopCars();
+	@Query("select r.car as BookingCount from ReservationLog r GROUP BY r.car.id order by count(r.car) desc")
+	List<Car> getTopCars();
 
 	@Query("select r from ReservationLog r where customer.id=?1")
 	List<ReservationLog> getByCustomerCars(int customerId);

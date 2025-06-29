@@ -26,7 +26,7 @@ public class ReturnService {
 
 
 
-	public Object returnCar(int rentalId) {
+	public Rental returnCar(int rentalId) {
 		// TODO Auto-generated method stub
 		Rental rental=rentalService.getByRentalID(rentalId);
 		LocalDate curr_date=LocalDate.now();

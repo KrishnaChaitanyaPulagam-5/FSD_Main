@@ -3,7 +3,6 @@ package com.springboot.carrental.service;
 import java.security.Principal;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.springboot.carrental.enums.CarStatus;
 import com.springboot.carrental.enums.SourceType;
@@ -23,16 +22,15 @@ public class CarService {
 	private CarRepository carRepository;
 	private LenderRepository lenderRepository;
 	private BranchRepository branchRepository;
-	@Autowired
 	private CarStatsService carStatsService;
 
 
-	public CarService(CarRepository carRepository, LenderRepository lenderRepository, BranchRepository branchRepository) {
+	public CarService(CarRepository carRepository, LenderRepository lenderRepository, BranchRepository branchRepository,CarStatsService carStatsService) {
 		super();
 		this.carRepository = carRepository;
 		this.lenderRepository = lenderRepository;
 		this.branchRepository = branchRepository;
-		
+		this.carStatsService=carStatsService;
 	}
 
 
@@ -51,7 +49,7 @@ public class CarService {
 	        throw new BadRequestException("Invalid SourceType");
 	    }
 	    Carstats carstats=car.getCarStats();
-	    Carstats  savedCarStats=carStatsService.addCarStats(carstats);
+	    Carstats savedCarStats=carStatsService.addCarStats(carstats);
 	    car.setCarStats(savedCarStats);
 
 	    return carRepository.save(car);

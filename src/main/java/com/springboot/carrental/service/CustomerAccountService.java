@@ -15,8 +15,6 @@ import com.springboot.carrental.repository.CustomerAccountRepository;
 public class CustomerAccountService {
 
 	private CustomerAccountRepository customerAccountRepository;
-	
-
 
 	public CustomerAccountService(CustomerAccountRepository customerAccountRepository) {
 		super();

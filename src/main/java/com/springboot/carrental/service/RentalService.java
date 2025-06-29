@@ -8,8 +8,6 @@ import org.springframework.stereotype.Service;
 import com.springboot.carrental.dto.RentalDetailsDto;
 import com.springboot.carrental.dto.RentalDto;
 import com.springboot.carrental.enums.PaymentStatus;
-import com.springboot.carrental.exception.InsufficientBalanceException;
-import com.springboot.carrental.exception.ResourceNotFoundException;
 import com.springboot.carrental.model.Rental;
 import com.springboot.carrental.model.ReservationLog;
 import com.springboot.carrental.repository.RentalRepository;
@@ -26,7 +24,7 @@ public class RentalService {
 	}
 
 
-	public Rental addNewRental(ReservationLog reservation) throws InsufficientBalanceException, ResourceNotFoundException {
+	public Rental addNewRental(ReservationLog reservation) {
 		// TODO Auto-generated method stub
 		Rental rental=new Rental();
 		rental.setReservation(reservation);

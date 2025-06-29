@@ -2,7 +2,6 @@ package com.springboot.carrental.service;
 
 import java.time.LocalDate;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.springboot.carrental.enums.CarStatus;
@@ -21,20 +20,21 @@ public class PaymentService {
 	
 	private PaymentRepository paymentRepository;
 	private CustomerAccountService cas;
-	@Autowired
 	private CompanyAccountService coas;
-	@Autowired
 	private RentalService rentalService;
-	@Autowired
 	private ReservationService reservationService;
-	@Autowired
 	private CarService carService;
 
 	public PaymentService(PaymentRepository paymentRepository,
-			CustomerAccountService cas) {
+			CustomerAccountService cas,CompanyAccountService coas,RentalService rentalService,
+			ReservationService reservationService,CarService carService) {
 		super();
 		this.paymentRepository = paymentRepository;
 		this.cas = cas;
+		this.coas=coas;
+		this.rentalService=rentalService;
+		this.reservationService=reservationService;
+		this.carService=carService;
 	}
 
 

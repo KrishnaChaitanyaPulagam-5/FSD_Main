@@ -1,15 +1,11 @@
 package com.springboot.carrental;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import java.security.Principal;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -17,61 +13,64 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import com.springboot.carrental.dto.RentalDetailsDto;
-import com.springboot.carrental.dto.RentalDto;
 import com.springboot.carrental.enums.CarStatus;
 import com.springboot.carrental.enums.PaymentStatus;
 import com.springboot.carrental.exception.InsufficientBalanceException;
 import com.springboot.carrental.exception.ResourceNotFoundException;
 import com.springboot.carrental.model.Car;
 import com.springboot.carrental.model.Customer;
+import com.springboot.carrental.model.CustomerAccount;
 import com.springboot.carrental.model.Payment;
 import com.springboot.carrental.model.Rental;
 import com.springboot.carrental.model.ReservationLog;
 import com.springboot.carrental.model.User;
-import com.springboot.carrental.repository.CarRepository;
-import com.springboot.carrental.repository.CustomerRepository;
 import com.springboot.carrental.repository.PaymentRepository;
-import com.springboot.carrental.repository.RentalRepository;
 import com.springboot.carrental.service.CarService;
+import com.springboot.carrental.service.CompanyAccountService;
+import com.springboot.carrental.service.CustomerAccountService;
 import com.springboot.carrental.service.PaymentService;
 import com.springboot.carrental.service.RentalService;
+import com.springboot.carrental.service.ReservationService;
 
 @SpringBootTest
-public class RentalServiceTest {
+public class PaymentServiceTest {
 	@InjectMocks
-	private RentalService rentalService;
-	@Mock
 	private PaymentService paymentService;
 	@Mock
-	private RentalRepository rentalRepository;
+	private CustomerAccountService cas;
 	@Mock
-	private CustomerRepository customerRepository;
+	private CompanyAccountService coas;
 	@Mock
-	private CarRepository carRepository;
+	private RentalService rentalService;
 	@Mock
-	private PaymentRepository paymentRepository;
+	private ReservationService reservationService;
 	@Mock
 	private CarService carService;
-
+	@Mock
+	private PaymentRepository paymentRepository;
 	
+	private Customer customer;
 	private Car car;
 	private ReservationLog reservation;
 	private Rental rental;
-	private Customer customer;
 	private Payment payment;
-	
 	
 	@BeforeEach
 	public void init() {
 		User user=new User();
 		user.setId(1);
 		user.setUsername("krishna@gmail.com");
+		
+		CustomerAccount account=new CustomerAccount();
+		account.setAccountNumber("dsfaf452353");
+		account.setId(1);
+		account.setAmount(50000);
 
 		customer=new Customer();
 		customer.setId(1);
 		customer.setName("krishna");
 		customer.setUser(user);
+		customer.setCustomerAccount(account);
 		
 		car=new Car();
 		car.setId(1);
@@ -90,64 +89,37 @@ public class RentalServiceTest {
 		rental.setId(1);
 		rental.setReservation(reservation);
 		rental.setStatus(PaymentStatus.SUCCESS);
+		rental.setLatefees(0);
 		rental.setRentalcost(1000);
 	
 		
 		payment=new Payment();
 		payment.setId(1);
 		payment.setRental(rental);
+		payment.setAmount(1000);
 		payment.setPaymentstatus(PaymentStatus.SUCCESS);
+	}
+	@Test
+	public void addPayment() throws InsufficientBalanceException, ResourceNotFoundException {
+		when(rentalService.getByRentalID(1)).thenReturn(rental);
+		when(rentalService.getReservationByRentalId(1)).thenReturn(reservation);
+		when(cas.getAmount(customer)).thenReturn(50000.00);
+		when(paymentRepository.save(any(Payment.class))).thenReturn(payment);
+		
+		Payment pay=paymentService.addPayment(1);
+		assertEquals(1000, pay.getAmount());
+		
+	}
+	@Test
+	public void InsufficientBalanceTest() throws ResourceNotFoundException, InsufficientBalanceException {
+		when(rentalService.getByRentalID(1)).thenReturn(rental);
+		when(rentalService.getReservationByRentalId(1)).thenReturn(reservation);
+		when(cas.getAmount(customer)).thenReturn(0.00);
 
-	}
-	
-	@Test
-	public void insertRental() throws InsufficientBalanceException, ResourceNotFoundException{
-	    
-	    when(carRepository.findById(1)).thenReturn(Optional.of(car));
-	    when(rentalRepository.save(any(Rental.class))).thenReturn(rental);
-	    assertEquals(rental, rentalService.addNewRental(reservation));
-	}
-	@Test
-	public void getByReservationTest() {
-		when(rentalRepository.getByReservation(reservation)).thenReturn(rental);
-		assertEquals(rental,rentalService.getByReservation(reservation));
-	}
-	@Test
-	public void updateStatusTest() {
-		Rental rental=new Rental();
-		rental.setStatus(PaymentStatus.SUCCESS);
-		when(rentalRepository.save(any(Rental.class))).thenReturn(rental);
-		rentalService.updateStatus(PaymentStatus.PENDING, rental);
-		assertEquals(PaymentStatus.PENDING, rental.getStatus());
-	}
-	@Test
-	public void rentaldetailsTestbyCustomerId() {
-		when(rentalRepository.getRentalByCustomerId(1)).thenReturn(List.of(rental));
-		List<RentalDto> dtos=new ArrayList<>();
-		RentalDto dto=new RentalDto();
-		dto.setRentalId(1);
-		dto.setAmount(1000.00);
-		dtos.add(dto);
-		RentalDetailsDto result=rentalService.getByCustomerId(1);
-		
-		assertEquals(1000,result.getAmount());
-		
-	}
-	
-	@Test
-	public void getByLoginTest() {
-		Principal principal=mock(Principal.class);
-		when(principal.getName()).thenReturn("krishna@gmail.com");
-		when(rentalRepository.getByLogin("krishna@gmail.com")).thenReturn(List.of(rental));
-		assertEquals(List.of(rental), rentalService.getByLogin(principal.getName()));
-		
+		InsufficientBalanceException e=assertThrows(InsufficientBalanceException.class, ()->{paymentService.addPayment(1);});
+		assertEquals("Insufficient Balance.",e.getMessage());
 	}
 
 }
-
-
-
-
-
 
 

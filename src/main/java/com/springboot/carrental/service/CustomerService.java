@@ -2,7 +2,6 @@ package com.springboot.carrental.service;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.springboot.carrental.enums.CustomerStatus;
@@ -15,14 +14,14 @@ import com.springboot.carrental.repository.CustomerRepository;
 public class CustomerService {
 
 	private CustomerRepository customerRepository;
-	@Autowired
-	private UserService userService;
-	@Autowired
+	private UserService userService;	
 	private CustomerAccountService cas;
 	
-	public CustomerService(CustomerRepository customerRepository) {
+	public CustomerService(CustomerRepository customerRepository,UserService userService,CustomerAccountService cas) {
 		super();
 		this.customerRepository = customerRepository;
+		this.userService=userService;
+		this.cas=cas;
 	}
 
 

@@ -12,8 +12,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.springboot.carrental.dto.RentalDetailsDto;
-import com.springboot.carrental.exception.InsufficientBalanceException;
-import com.springboot.carrental.exception.ResourceNotFoundException;
 import com.springboot.carrental.model.Rental;
 import com.springboot.carrental.model.ReservationLog;
 import com.springboot.carrental.service.RentalService;
@@ -28,7 +26,7 @@ public class RentalController {
 	private RentalService rentalService;
 		
 	@PostMapping("/add")
-	public Rental addNewRental(ReservationLog reservation) throws InsufficientBalanceException, ResourceNotFoundException {
+	public Rental addNewRental(ReservationLog reservation){
 		Rental rental=rentalService.addNewRental(reservation);
 		return rental;
 	}

@@ -2,7 +2,6 @@ package com.springboot.carrental.service;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.springboot.carrental.exception.ResourceNotFoundException;
@@ -17,16 +16,17 @@ public class ManagerService {
 	
 	private ManagerRepository managerRepository;
 	private BranchRepository branchRepository;
-	@Autowired
 	private UserService userService;
-	@Autowired
 	private CompanyAccountService cas;
 	
 
-	public ManagerService(ManagerRepository managerRepository, BranchRepository branchRepository) {
+	public ManagerService(ManagerRepository managerRepository, BranchRepository branchRepository,UserService userService,
+			CompanyAccountService cas) {
 		super();
 		this.managerRepository = managerRepository;
 		this.branchRepository = branchRepository;
+		this.userService=userService;
+		this.cas=cas;
 	}
 
 
