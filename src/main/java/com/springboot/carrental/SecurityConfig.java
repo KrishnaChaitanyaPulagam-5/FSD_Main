@@ -69,6 +69,8 @@ public class SecurityConfig {
 				.requestMatchers("/api/user/updatePassword/{Password}/{UserID}").authenticated()
 				.requestMatchers("/api/reservation/getTopCars").permitAll()
 				.requestMatchers("/api/reservation/getTopCarsForCustomer").hasAuthority("CUSTOMER")
+				.requestMatchers("/api/customer/updateByLogin").authenticated()
+				.requestMatchers("/api/customer/upload/profile_pic").authenticated()
 				
 				.anyRequest()
 //				.permitAll())//should be removed after development

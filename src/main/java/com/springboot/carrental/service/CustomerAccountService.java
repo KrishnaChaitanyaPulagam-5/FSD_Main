@@ -32,7 +32,6 @@ public class CustomerAccountService {
 
 
 	public double getAmount(Customer customer) throws ResourceNotFoundException {
-		// TODO Auto-generated method stub
 		int id=customer.getId();
 		if(customerAccountRepository.findById(id).isPresent()) {
 		return customerAccountRepository.getAmount(id);}
@@ -62,7 +61,6 @@ public class CustomerAccountService {
 	}
 
 	public void updateLenderAmount(Lender lender, double amount) throws ResourceNotFoundException {
-		// TODO Auto-generated method stub
 		int id=lender.getId();
 		CustomerAccount customerAccount=findById(id);
 

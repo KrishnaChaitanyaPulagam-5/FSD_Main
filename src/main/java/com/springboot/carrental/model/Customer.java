@@ -34,6 +34,8 @@ public class Customer {
 	private CustomerAccount customerAccount;
 	@Enumerated(EnumType.STRING)
 	private CustomerStatus status;
+	
+	private String profilepic;
 
 	public int getId() {
 		return id;
@@ -113,6 +115,14 @@ public class Customer {
 
 	public void setStatus(CustomerStatus status) {
 		this.status = status;
+	}
+
+	public String getProfilepic() {
+		return profilepic;
+	}
+
+	public void setProfilepic(String profilepic) {
+		this.profilepic = profilepic;
 	}
 	
 }

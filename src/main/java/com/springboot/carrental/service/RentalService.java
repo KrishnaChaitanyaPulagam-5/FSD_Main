@@ -28,7 +28,6 @@ public class RentalService {
 
 
 	public Rental addNewRental(ReservationLog reservation) {
-		// TODO Auto-generated method stub
 		Rental rental=new Rental();
 		rental.setReservation(reservation);
 		rental.setStart_date(reservation.getStartdate());
@@ -63,13 +62,11 @@ public class RentalService {
 	}
 
 	public List<Rental> getByLogin(String principal) {
-		// TODO Auto-generated method stub
 		return rentalRepository.getByLogin(principal);
 	}
 
 
 	public Rental getByRentalID(int rentalId) {
-		// TODO Auto-generated method stub
 		return rentalRepository.getByRentalID(rentalId);
 	}
 	
@@ -87,7 +84,6 @@ public class RentalService {
 		List<RentalDto> dtos=new ArrayList<>();
 		double totalspent=0;
 		for(Rental rental:rentals) {
-			
 			RentalDto dto=new RentalDto();
 			dto.setRentalId(rental.getId());
 			dto.setStart_date(rental.getStart_date());
@@ -104,13 +100,11 @@ public class RentalService {
 
 
 	public List<Rental> getByLoginBooked(String name) {
-		// TODO Auto-generated method stub
 		return rentalRepository.getByLoginBooked(name);
 	}
 
 
 	public List<Rental> getByLenderId(String name) {
-		// TODO Auto-generated method stub
 		return rentalRepository.getByLenderId(name);
 	}
 

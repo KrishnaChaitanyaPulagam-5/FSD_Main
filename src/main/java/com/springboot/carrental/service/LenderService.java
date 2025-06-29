@@ -27,7 +27,6 @@ public class LenderService {
 
 
 	public Lender insertLender(Lender lender) {
-		// TODO Auto-generated method stub
 		User user=lender.getUser();
 		user.setRole("LENDER");
 		userService.registerUser(user);
@@ -40,19 +39,16 @@ public class LenderService {
 
 
 	public List<Lender> getall() {
-		// TODO Auto-generated method stub
 		return lenderRepository.findAll();
 	}
 
 
 	public Lender getByID(int lenderId) throws ResourceNotFoundException {
-		// TODO Auto-generated method stub
 		return lenderRepository.findById(lenderId).orElseThrow(()->new ResourceNotFoundException("Lender not found"));
 	}
 
 
 	public Lender getByLogin(String name) {
-		// TODO Auto-generated method stub
 		return lenderRepository.getByLogin(name);
 	}
 

@@ -21,26 +21,21 @@ public class UserService {
 	}
 
 	public User registerUser(User user) {
-		// TODO Auto-generated method stub
 		String plainPassword=user.getPassword();
 		String encodedpassword=passwordEncoder.encode(plainPassword);
 		user.setPassword(encodedpassword);
-		
 		return userRepository.save(user);
 	}
 
 	public List<User> getAllUsers() {
-		// TODO Auto-generated method stub
 		return userRepository.findAll();
 	}
 
 	public Object getUserInfo(String username) {
-		// TODO Auto-generated method stub
 		return userRepository.getByName(username);
 	}
 
 	public User updatePassword(String password, int userID) throws ResourceNotFoundException {
-		// TODO Auto-generated method stub
 		User user=userRepository.findById(userID).orElseThrow(()->new ResourceNotFoundException("user not found"));
 		String plainPassword=password;
 		String encodedpassword=passwordEncoder.encode(plainPassword);

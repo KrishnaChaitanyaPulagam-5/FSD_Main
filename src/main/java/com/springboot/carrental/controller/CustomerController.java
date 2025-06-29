@@ -1,5 +1,6 @@
 package com.springboot.carrental.controller;
 
+import java.io.IOException;
 import java.security.Principal;
 import java.util.List;
 
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.springboot.carrental.exception.ResourceNotFoundException;
 import com.springboot.carrental.model.Customer;
@@ -50,4 +52,13 @@ public class CustomerController {
 		return customerService.updateCustomerStatus(customerId,status);
 	}
 	
+	@PutMapping("/updateByLogin")
+	public Customer updateByLogin(@RequestBody Customer customer,Principal principal) throws IOException {
+		return customerService.updateByLogin(customer,principal);
+	}
+	
+	@PostMapping("/upload/profile_pic")
+    public Customer uploadProfilePic(Principal principal,@RequestParam MultipartFile file)throws IOException {
+    	 return customerService.uploadProfilePic(file, principal.getName());
+    }
 }

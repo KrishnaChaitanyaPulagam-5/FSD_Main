@@ -55,10 +55,10 @@ public class JwtFilter extends OncePerRequestFilter{
 				if(isValid) {
 					/* Authnticate: Set up Authentication - Log this user IN, allow the API access */
 					UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = 
-		                    new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+		                    new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());//loggedinUser,password:null,roles
 		                usernamePasswordAuthenticationToken
 		                        .setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-		                SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
+		                SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);//** tells spring user is valid user and treat them as authenticated from now
 				}
 			}
 			filterChain.doFilter(request, response);

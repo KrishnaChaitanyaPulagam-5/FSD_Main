@@ -44,7 +44,6 @@ public class ReservationService {
 	}
 
 	public ReservationLog registerNewReservation(int customerId, int carId, ReservationLog reservation) throws InsufficientBalanceException, CarNotAvailableException, ResourceNotFoundException {
-		// TODO Auto-generated method stub
 		logger.info("Attempting to register reservation: customerId={}, carId={}", customerId, carId);
 		Car car = carRepository.findById(carId).orElseThrow(() -> new ResourceNotFoundException("Car Not Found"));
 		Customer customer = customerRepository.findById(customerId).orElseThrow(() -> new ResourceNotFoundException("Customer Id Invalid"));
@@ -56,8 +55,6 @@ public class ReservationService {
 			ReservationLog savedReservation = reservationRepository.save(reservation);
 			logger.info("Reservation saved with ID: {}", savedReservation.getId());
 			rentalService.addNewRental(savedReservation);
-
-
 			return savedReservation;
 		} else {
 			logger.warn("Car you are seeking is already booked : carID={}",carId);
@@ -67,17 +64,14 @@ public class ReservationService {
 	}
 
 	public List<ReservationLog> getall() {
-		// TODO Auto-generated method stub
 		return reservationRepository.findAll();
 	}
 
 	public List<ReservationLog> getForCustomer(int customerId) {
-		// TODO Auto-generated method stub
 		return reservationRepository.getForCustomer(customerId);
 	}
 
 	public ReservationLog getById(int id) {
-		// TODO Auto-generated method stub
 		return reservationRepository.findById(id).orElseThrow(() -> new RuntimeException("Invalid Id.check again"));
 	}
 
@@ -86,17 +80,13 @@ public class ReservationService {
 	}
 
 	public ReservationLog updateReservation(CarStatus status, ReservationLog reservation) {
-		
 		reservation.setStatus(status);
 		logger.info("updated car {} status to {}",reservation.getCar().getId(),status);
 		return reservationRepository.save(reservation);
 	}
 
 	public List<ReservationLog> getByLogin(Principal principal) {
-		// TODO Auto-generated method stub
 		String username=principal.getName();
-		
-		
 		return reservationRepository.getByLogin(username);
 	}
 
@@ -118,12 +108,10 @@ public class ReservationService {
 	}
 
 	public List<ReservationLog> getByLenderId(String username) {
-		// TODO Auto-generated method stub
 		return reservationRepository.getBylenderId(username);
 	}
 
 	public Top5CarsDto getTopCars(Top5CarsDto dto) {
-		// TODO Auto-generated method stub
 		logger.info("Collecting Top Cars..");
 		List<Car> TopCars=reservationRepository.getTopCars();
 		List<ReservationLog> reservations=getall();

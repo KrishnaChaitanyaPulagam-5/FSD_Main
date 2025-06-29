@@ -21,7 +21,6 @@ public class CustomUserDetailsService implements UserDetailsService {
 
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		// TODO Auto-generated method stub
 
 		User user = userRepository.getByName(username);
 		SimpleGrantedAuthority sga = new SimpleGrantedAuthority(user.getRole());

@@ -30,7 +30,6 @@ public class ReturnService {
 
 
 	public Rental returnCar(int rentalId) {
-		// TODO Auto-generated method stub
 		logger.info("Return Process for Car is initiated with rental Id: {}",rentalId);
 		Rental rental=rentalService.getByRentalID(rentalId);
 		LocalDate curr_date=LocalDate.now();

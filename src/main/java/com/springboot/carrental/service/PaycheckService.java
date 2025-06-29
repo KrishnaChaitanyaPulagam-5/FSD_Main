@@ -36,7 +36,6 @@ public class PaycheckService {
 
 
 	public PayCheck addNewPaycheck(int rentalId) {
-		// TODO Auto-generated method stub
 		Rental rental=rentalService.getByRentalID(rentalId);
 		PayCheck paycheck=new PayCheck();
 		paycheck.setLender(rental.getReservation().getCar().getLender());
@@ -47,7 +46,6 @@ public class PaycheckService {
 		logger.info("New Paycheck Added fro RentalID:{}",rentalId);
 		return paycheckRepository.save(paycheck);
 	}
-	
 	
 	public PayCheck payToLender(int rentalId) throws ResourceNotFoundException,InsufficientBalanceException {
 		logger.info("Payment to Lender Initialted for rentalId: {}",rentalId);
@@ -90,13 +88,11 @@ public class PaycheckService {
 
 
 	public List<PayCheck> getAll() {
-		// TODO Auto-generated method stub
 		return paycheckRepository.findAll();
 	}
 
 
 	public List<PayCheck> getByLender(String name) {
-		// TODO Auto-generated method stub
 		Lender lender=lenderService.getByLogin(name);
 		logger.info("All paychecks for the Lender with ID: {}",lender.getId());
 		return paycheckRepository.getByLender(lender.getId());

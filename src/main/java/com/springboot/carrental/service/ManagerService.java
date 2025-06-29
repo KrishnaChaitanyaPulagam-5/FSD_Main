@@ -30,9 +30,7 @@ public class ManagerService {
 	}
 
 
-
 	public Manager insertManager(int branchId,Manager manager) throws ResourceNotFoundException {
-		// TODO Auto-generated method stub
 		Branch branch=branchRepository.findById(branchId).orElseThrow(()->new ResourceNotFoundException("Branch Not Found"));
 		manager.setBranch(branch);
 		User user=manager.getUser();
@@ -44,19 +42,12 @@ public class ManagerService {
 		return managerRepository.save(manager);
 	}
 
-
-
 	public List<Manager> getall() {
-		// TODO Auto-generated method stub
 		return managerRepository.findAll();
 	}
 
-
-
 	public Manager getByLogin(String name) {
-		// TODO Auto-generated method stub
 		User user=(User) userService.getUserInfo(name);
-		
 		return managerRepository.getByLogin(user.getId());
 	}
 

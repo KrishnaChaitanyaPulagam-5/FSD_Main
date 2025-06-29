@@ -57,14 +57,13 @@ public class CarService {
 	    Carstats carstats=car.getCarStats();
 	    Carstats savedCarStats=carStatsService.addCarStats(carstats);
 	    car.setCarStats(savedCarStats);
-
 	    return carRepository.save(car);
 	}
 
 
 
 	public List<Car> getAll() {
-
+		logger.info("List of all cars is called");
 		return carRepository.findAll();
 	}
 
@@ -76,7 +75,6 @@ public class CarService {
 
 
 	public List<Car> searchByCategory(String category) {
-		// TODO Auto-generated method stub
 		return carRepository.searchByCategory(category);
 	}
 	
@@ -118,14 +116,12 @@ public class CarService {
 
 
 	public void updateCarStatus(CarStatus status,Car car) {
-		// TODO Auto-generated method stub
 		car.setStatus(status);
 		carRepository.save(car);
 	}
 
 
 	public Car updateCarStatusByManager(int carId,String status) throws ResourceNotFoundException {
-		// TODO Auto-generated method stub
 		Car car=carRepository.findById(carId).orElseThrow(()->new ResourceNotFoundException("Car Not found"));
 		car.setStatus(CarStatus.valueOf(status));
 		return carRepository.save(car);

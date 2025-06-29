@@ -42,7 +42,6 @@ public class PaymentService {
 
 
 	public Payment addPayment(int rentalId) throws InsufficientBalanceException, ResourceNotFoundException {
-		// TODO Auto-generated method stub
 		logger.info("Payment initiated for rentalId {}",rentalId);
 		Rental rental=rentalService.getByRentalID(rentalId);
 		ReservationLog reservation=rentalService.getReservationByRentalId(rentalId);
@@ -83,14 +82,11 @@ public class PaymentService {
 		}
 		payment.setPaymentmode(PaymentMode.PAYPAL);
 		
-		
-		
 		return paymentRepository.save(payment);
 	}
 
 
 	public Payment getPayment(int id) {
-		// TODO Auto-generated method stub
 		return paymentRepository.getByRentalID(id);
 	}
 
