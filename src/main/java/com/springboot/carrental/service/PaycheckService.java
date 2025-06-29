@@ -3,6 +3,8 @@ package com.springboot.carrental.service;
 import java.time.LocalDate;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.springboot.carrental.enums.PaymentStatus;
@@ -20,6 +22,7 @@ public class PaycheckService {
 	private CompanyAccountService cas;
 	private CustomerAccountService cuas;
 	private LenderService lenderService;
+	Logger logger=LoggerFactory.getLogger("PaycheckService");
 
 	public PaycheckService(PaycheckRepository paycheckRepository, RentalService rentalService,
 			CompanyAccountService cas,CustomerAccountService cuas,LenderService lenderService) {
@@ -41,22 +44,25 @@ public class PaycheckService {
 		paycheck.setPaymentstatus(PaymentStatus.PENDING);
 		paycheck.setAmount(rental.getRentalcost()*0.90);
 		paycheck.setRental(rental);
+		logger.info("New Paycheck Added fro RentalID:{}",rentalId);
 		return paycheckRepository.save(paycheck);
 	}
 	
 	
 	public PayCheck payToLender(int rentalId) throws ResourceNotFoundException,InsufficientBalanceException {
-		// TODO Auto-generated method stub
+		logger.info("Payment to Lender Initialted for rentalId: {}",rentalId);
 		Rental rental=rentalService.getByRentalID(rentalId);
 		Lender lender=rental.getReservation().getCar().getLender();
 		PayCheck paycheck=getByRentalId(rentalId);
 		double companybalance=cas.checkBalance();
 		double amount=rental.getRentalcost()*0.90;
 		if (lender == null) {
+			logger.info("Company Car");
 			paycheck.setPaymentdate(LocalDate.now());
 			paycheck.setPaymentstatus(PaymentStatus.SUCCESS);
 		}
 		else {
+			
 		if(amount<=companybalance) {
 			double balance=lender.getCustomerAccount().getAmount();
 			double newbalance=balance+amount;
@@ -66,7 +72,9 @@ public class PaycheckService {
 			paycheck.setAmount(amount);
 			paycheck.setPaymentdate(LocalDate.now());
 			paycheck.setPaymentstatus(PaymentStatus.SUCCESS);
+			logger.info("Payment Successful to the Lender: {}",lender.getName());
 		}else {
+			logger.error("Company Funds are Insufficient Available: {}",companybalance);
 			throw new InsufficientBalanceException("Comapany Funds Insufficient");
 		}}
 		
@@ -90,7 +98,7 @@ public class PaycheckService {
 	public List<PayCheck> getByLender(String name) {
 		// TODO Auto-generated method stub
 		Lender lender=lenderService.getByLogin(name);
-		
+		logger.info("All paychecks for the Lender with ID: {}",lender.getId());
 		return paycheckRepository.getByLender(lender.getId());
 	}
 

@@ -3,7 +3,9 @@ package com.springboot.carrental.service;
 import java.security.Principal;
 import java.util.List;
 
+import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
+
 import com.springboot.carrental.enums.CarStatus;
 import com.springboot.carrental.enums.SourceType;
 import com.springboot.carrental.exception.BadRequestException;
@@ -15,6 +17,7 @@ import com.springboot.carrental.model.Lender;
 import com.springboot.carrental.repository.BranchRepository;
 import com.springboot.carrental.repository.CarRepository;
 import com.springboot.carrental.repository.LenderRepository;
+import org.slf4j.LoggerFactory;
 
 @Service
 public class CarService {
@@ -23,7 +26,7 @@ public class CarService {
 	private LenderRepository lenderRepository;
 	private BranchRepository branchRepository;
 	private CarStatsService carStatsService;
-
+	Logger logger=LoggerFactory.getLogger("CarService");
 
 	public CarService(CarRepository carRepository, LenderRepository lenderRepository, BranchRepository branchRepository,CarStatsService carStatsService) {
 		super();
@@ -40,12 +43,15 @@ public class CarService {
 	    car.setBranch(branch);
 
 	    if (car.getSource() == SourceType.COMPANY) {
+	    	logger.info("car source is set to {} so lender is null",car.getSource());
 	        car.setLender(null);
 	    } else if (car.getSource() == SourceType.LENDER) {
+	    	logger.info("car source is set to Lender with ID:{} ",lenderId);
 	        Lender lender = lenderRepository.findById(lenderId)
 	            .orElseThrow(() -> new ResourceNotFoundException("Lender not found"));
 	        car.setLender(lender);
 	    } else {
+	    	logger.warn("Invalid Source Type provided");
 	        throw new BadRequestException("Invalid SourceType");
 	    }
 	    Carstats carstats=car.getCarStats();
@@ -58,13 +64,13 @@ public class CarService {
 
 
 	public List<Car> getAll() {
-		// TODO Auto-generated method stub
+
 		return carRepository.findAll();
 	}
 
 
 	public List<Car> getAllAvailable() {
-		// TODO Auto-generated method stub
+
 		return carRepository.getAllAvailable();
 	}
 
@@ -81,30 +87,31 @@ public class CarService {
 
 
 	public List<Car> searchByBrand(String brandName) {
-		// TODO Auto-generated method stub
+
 		return carRepository.searchByBrand(brandName);
 	}
 
 
 	public List<Car> searchByKeyword(String keyword) {
-		// TODO Auto-generated method stub
+
 		return carRepository.searchByKeyword(keyword);
 	}
 
 
 	public Car updateCar(int id, Car car) {
-		// TODO Auto-generated method stub
 		Car dbcar=carRepository.findById(id).orElseThrow(()->new RuntimeException());
-		if(car.getModel()!=null) 
+		if(car.getModel()!=null)
+			logger.info("car model is set to {}",car.getModel());
 			dbcar.setModel(car.getModel());
 		if(car.getStatus()!=null)
 			dbcar.setStatus(car.getStatus());
 		if(car.getDailyrate()!=0)
+			logger.info("car dailyrate is updated to {}",car.getDailyrate());
 			dbcar.setDailyrate(car.getDailyrate());
 		if(car.getImage()!=null)
 			dbcar.setImage(car.getImage());
 
-		
+		logger.info("car updated");
 		return carRepository.save(dbcar);
 		
 	}

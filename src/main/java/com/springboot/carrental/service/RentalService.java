@@ -3,6 +3,9 @@ package com.springboot.carrental.service;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.springboot.carrental.dto.RentalDetailsDto;
@@ -15,7 +18,7 @@ import com.springboot.carrental.repository.RentalRepository;
 public class RentalService {
 
 	private RentalRepository rentalRepository;
-	
+	Logger logger=LoggerFactory.getLogger("RentalService");
 	
 
 	public RentalService(RentalRepository rentalRepository) {
@@ -37,7 +40,7 @@ public class RentalService {
 		rental.setStatus(PaymentStatus.PENDING);
 		rental.setLatefees(0);
 		rental=rentalRepository.save(rental);
-		
+		logger.info("New Rental Added with Id:{}",rental.getId());
 		
 		return rental;
 		
@@ -56,6 +59,7 @@ public class RentalService {
 	public void updateLateFees(double cost,Rental rental) {
 		rental.setLatefees(cost);
 		rentalRepository.save(rental);
+		logger.info("updated late fees {} for rentalId:{}",cost,rental.getId());
 	}
 
 	public List<Rental> getByLogin(String principal) {
@@ -78,7 +82,7 @@ public class RentalService {
 	}
 
 	public RentalDetailsDto getByCustomerId(int customerId) {
-		// TODO Auto-generated method stub
+		logger.info("Fetching rental details for customerId: {}", customerId);
 		List<Rental> rentals=getRentalByCustomerId(customerId);
 		List<RentalDto> dtos=new ArrayList<>();
 		double totalspent=0;
@@ -94,7 +98,7 @@ public class RentalService {
 			totalspent+=rental.getRentalcost();
 			dtos.add(dto);
 		}
-		
+		logger.info("Total amount spent by customerId {}: {}", customerId, totalspent);
 		return new RentalDetailsDto(dtos,totalspent);
 	}
 

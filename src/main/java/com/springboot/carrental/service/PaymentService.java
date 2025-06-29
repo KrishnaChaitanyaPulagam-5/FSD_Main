@@ -2,6 +2,8 @@ package com.springboot.carrental.service;
 
 import java.time.LocalDate;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.springboot.carrental.enums.CarStatus;
@@ -24,6 +26,7 @@ public class PaymentService {
 	private RentalService rentalService;
 	private ReservationService reservationService;
 	private CarService carService;
+	Logger logger=LoggerFactory.getLogger("PaymentService");
 
 	public PaymentService(PaymentRepository paymentRepository,
 			CustomerAccountService cas,CompanyAccountService coas,RentalService rentalService,
@@ -40,6 +43,7 @@ public class PaymentService {
 
 	public Payment addPayment(int rentalId) throws InsufficientBalanceException, ResourceNotFoundException {
 		// TODO Auto-generated method stub
+		logger.info("Payment initiated for rentalId {}",rentalId);
 		Rental rental=rentalService.getByRentalID(rentalId);
 		ReservationLog reservation=rentalService.getReservationByRentalId(rentalId);
 		Car car=reservation.getCar();
@@ -47,12 +51,15 @@ public class PaymentService {
 		Payment payment=new Payment();
 		payment.setRental(rental);
 		if(rental.getLatefees()==0) {
+			logger.info("Paying the Rental fees");
 		payment.setAmount(rental.getRentalcost());}
 		else {
+			logger.info("Paying the LateFees");
 			payment.setAmount(rental.getLatefees());
 		}
 		payment.setPaymentdate(LocalDate.now());
 		if(cas.getAmount(customer)>payment.getAmount()) {
+			logger.info("Payment Success.Car with Id:{} is booked",car.getId());
 			payment.setPaymentstatus(PaymentStatus.SUCCESS);
 			cas.updateAmount(customer,payment.getAmount());
 			coas.payToCompanyAccount(payment.getAmount());
@@ -65,10 +72,12 @@ public class PaymentService {
 			    carService.updateCarStatus(CarStatus.AVAILABLE, car);
 			}
 		}else {
+			logger.warn("Payment Failed");
 			payment.setPaymentstatus(PaymentStatus.FAILED);
 			rentalService.updateStatus(PaymentStatus.FAILED, rental);
 			reservationService.updateReservation(CarStatus.CANCELLED,reservation);
 			carService.updateCarStatus(CarStatus.AVAILABLE, car);
+			logger.error("Customer {} doesnt have Sufficient Balance",customer.getName());
 			throw new InsufficientBalanceException("Insufficient Balance.");
 			
 		}
